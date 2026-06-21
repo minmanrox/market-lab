@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Historical data (download separately — don't commit large CSVs)
+*.csv
+
+# Zybo PS compiled output
+zybo/*.o
+zybo/*.elf
+zybo/ps_example
+
+# OS
+.DS_Store
+Thumbs.db

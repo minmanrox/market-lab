@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market Lab — {{ symbol }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <!-- TradingView Lightweight Charts (MIT) -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Socket.IO client -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+
+<header>
+  <span class="logo">MARKET LAB</span>
+  <span class="sym">{{ symbol }}</span>
+  <div class="feed-status">
+    <span class="dot" id="dot"></span>
+    <span id="feed-label">connecting…</span>
+  </div>
+</header>
+
+<!-- ── Price bar ─────────────────────────────────────────────────────── -->
+<div class="price-bar">
+  <div class="price-cell bid-cell">
+    <label>BID</label>
+    <span class="price-num" id="p-bid">—</span>
+    <span class="price-sz"  id="p-bid-sz"></span>
+  </div>
+  <div class="price-cell mid-cell">
+    <label>MID</label>
+    <span class="price-num" id="p-mid">—</span>
+  </div>
+  <div class="price-cell ask-cell">
+    <label>ASK</label>
+    <span class="price-num" id="p-ask">—</span>
+    <span class="price-sz"  id="p-ask-sz"></span>
+  </div>
+  <div class="price-cell spd-cell">
+    <label>SPREAD</label>
+    <span class="price-num" id="p-spd">—</span>
+  </div>
+</div>
+
+<!-- ── Chart ─────────────────────────────────────────────────────────── -->
+<div id="chart-wrap"></div>
+
+<!-- ── Bottom panels ─────────────────────────────────────────────────── -->
+<div class="panels">
+
+  <!-- Order entry -->
+  <div class="panel" id="order-panel">
+    <h3>Order Entry</h3>
+
+    <div class="side-toggle">
+      <button class="btn-side active-buy" id="btn-buy"  onclick="setSide('BUY')">BUY</button>
+      <button class="btn-side"            id="btn-sell" onclick="setSide('SELL')">SELL</button>
+    </div>
+
+    <div class="form-row">
+      <label>Type</label>
+      <select id="ord-type" onchange="onTypeChange()">
+        <option value="MARKET">MARKET</option>
+        <option value="LIMIT">LIMIT</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label>Qty</label>
+      <input type="number" id="ord-qty" value="100" min="1">
+    </div>
+
+    <div class="form-row" id="limit-row" style="display:none">
+      <label>Limit Px</label>
+      <input type="number" id="ord-limit" step="0.01" placeholder="0.00">
+    </div>
+
+    <button class="btn-submit" id="submit-btn" onclick="submitOrder()">Submit BUY</button>
+
+    <div id="submit-msg" style="margin-top:8px;font-size:11px;color:var(--dim)"></div>
+  </div>
+
+  <!-- Portfolio / P&L -->
+  <div class="panel" id="pnl-panel">
+    <h3>Portfolio</h3>
+    <div class="pnl-grid">
+      <div class="pnl-row">
+        <label>Position</label>
+        <span class="val" id="pnl-pos">0</span>
+      </div>
+      <div class="pnl-row">
+        <label>Avg Cost</label>
+        <span class="val zero" id="pnl-avg">—</span>
+      </div>
+      <div class="pnl-row">
+        <label>Unrealized</label>
+        <span class="val zero" id="pnl-unreal">$0.00</span>
+      </div>
+      <div class="pnl-row">
+        <label>Realized</label>
+        <span class="val zero" id="pnl-real">$0.00</span>
+      </div>
+      <div class="pnl-row total">
+        <label>Total P&amp;L</label>
+        <span class="val zero" id="pnl-total">$0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fills blotter + resting orders -->
+  <div class="panel" id="blotter-panel">
+    <h3>Fills</h3>
+    <table id="blotter">
+      <thead>
+        <tr>
+          <th>#</th><th>Side</th><th>Qty</th><th>Fill Px</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="blotter-body"></tbody>
+    </table>
+
+    <div id="resting-section">
+      <h3>Resting Orders</h3>
+      <table id="resting-table">
+        <thead>
+          <tr><th>#</th><th>Side</th><th>Qty</th><th>Limit Px</th><th></th></tr>
+        </thead>
+        <tbody id="resting-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- .panels -->
+
+<script>
+  const SYMBOL = "{{ symbol }}";
+</script>
+<script src="/static/main.js"></script>
+</body>
+</html>
